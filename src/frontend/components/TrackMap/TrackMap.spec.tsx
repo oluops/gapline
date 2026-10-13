@@ -9,6 +9,13 @@ vi.mock('./hooks/useHighlightColor');
 vi.mock('./hooks/useGhostSectorColors', () => ({
   useGhostSectorColors: vi.fn(() => null),
 }));
+vi.mock('./hooks/useLapDeltaMap', () => ({
+  useLapDeltaMap: vi.fn(() => ({
+    current: [],
+    previous: null,
+    hasReference: false,
+  })),
+}));
 vi.mock('@irdashies/domain/standings/useDriverLivePositions', () => ({
   useDriverLivePositions: vi.fn(() => ({})),
 }));

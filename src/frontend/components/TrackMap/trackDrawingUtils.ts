@@ -382,7 +382,7 @@ const SECTOR_COLOR_HEX: Record<SectorColor | 'current', string | null> = {
  * Convert a lap-distance fraction (0–1 from S/F) to a float index into
  * trackPathPoints, applying the same offset/direction math used for drivers.
  */
-function progressToFloatIndex(
+export function progressToFloatIndex(
   progress: number,
   trackPathPoints: { x: number; y: number }[],
   totalLength: number,
@@ -396,6 +396,67 @@ function progressToFloatIndex(
       : (intersectionLength - adjustedLength + totalLength) % totalLength;
   return (length / totalLength) * (trackPathPoints.length - 1);
 }
+
+/**
+ * Stroke the track between two float indices into trackPathPoints, following
+ * race direction and wrapping across the start/finish seam. The caller sets
+ * strokeStyle and lineWidth.
+ */
+const strokeTrackRange = (
+  ctx: CanvasRenderingContext2D,
+  trackPathPoints: { x: number; y: number }[],
+  startFloat: number,
+  endFloat: number,
+  direction: 'clockwise' | 'anticlockwise'
+) => {
+  const n = trackPathPoints.length;
+  ctx.beginPath();
+
+  // Interpolated start point (same formula for both directions)
+  const startInt = Math.floor(startFloat);
+  const t0 = startFloat - startInt;
+  const p0 = trackPathPoints[startInt];
+  const p1 = trackPathPoints[Math.min(startInt + 1, n - 1)];
+  ctx.moveTo(p0.x + (p1.x - p0.x) * t0, p0.y + (p1.y - p0.y) * t0);
+
+  if (direction !== 'clockwise') {
+    // Anticlockwise: race progress maps to increasing path indices.
+    // A sector wraps when endFloat < startFloat (last sector crosses the
+    // array boundary from n-1 back to 0).
+    const wraps = endFloat < startFloat;
+    const endInt = wraps ? n - 1 : Math.ceil(endFloat);
+
+    for (let j = startInt + 1; j <= endInt; j++) {
+      ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
+    }
+
+    if (wraps) {
+      const endIntWrap = Math.ceil(endFloat);
+      for (let j = 0; j <= endIntWrap; j++) {
+        ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
+      }
+    }
+  } else {
+    // Clockwise: race progress maps to DECREASING path indices.
+    // A sector wraps when endFloat > startFloat (it crosses the array
+    // boundary from 0 back to n-1).
+    const wraps = endFloat > startFloat;
+    const endInt = wraps ? 0 : Math.floor(endFloat);
+
+    for (let j = startInt; j >= endInt; j--) {
+      ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
+    }
+
+    if (wraps) {
+      const endIntWrap = Math.floor(endFloat);
+      for (let j = n - 1; j >= endIntWrap; j--) {
+        ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
+      }
+    }
+  }
+
+  ctx.stroke();
+};
 
 /**
  * Draw per-sector colored segments over the base track line.
@@ -416,8 +477,6 @@ export const drawSectorColors = (
   currentSectorIdx?: number
 ) => {
   if (trackPathPoints.length < 2 || sectors.length === 0) return;
-
-  const n = trackPathPoints.length;
 
   // Build sector boundary indices (float) in path-point space
   const boundaryIndices = sectors.map((s) =>
@@ -447,52 +506,90 @@ export const drawSectorColors = (
       i + 1 < sectors.length ? boundaryIndices[i + 1] : boundaryIndices[0];
 
     ctx.strokeStyle = hex;
-    ctx.beginPath();
+    strokeTrackRange(ctx, trackPathPoints, startFloat, endFloat, direction);
+  }
 
-    // Interpolated start point (same formula for both directions)
-    const startInt = Math.floor(startFloat);
-    const t0 = startFloat - startInt;
-    const p0 = trackPathPoints[startInt];
-    const p1 = trackPathPoints[Math.min(startInt + 1, n - 1)];
-    ctx.moveTo(p0.x + (p1.x - p0.x) * t0, p0.y + (p1.y - p0.y) * t0);
+  ctx.restore();
+};
 
-    if (direction !== 'clockwise') {
-      // Anticlockwise: race progress maps to increasing path indices.
-      // A sector wraps when endFloat < startFloat (last sector crosses the
-      // array boundary from n-1 back to 0).
-      const wraps = endFloat < startFloat;
-      const endInt = wraps ? n - 1 : Math.ceil(endFloat);
+// ---------------------------------------------------------------------------
+// Delta map
+// ---------------------------------------------------------------------------
 
-      for (let j = startInt + 1; j <= endInt; j++) {
-        ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
-      }
+/**
+ * Colour for one segment's time gained (negative) or lost (positive), in
+ * seconds. Opacity grows with the size of the difference, reaching full at
+ * `scaleSeconds`; differences under a few milliseconds are left uncoloured so
+ * the map only lights up where something actually happened.
+ */
+export const deltaSegmentColor = (
+  seconds: number | null | undefined,
+  scaleSeconds: number,
+  dim = false
+): string | null => {
+  if (seconds === null || seconds === undefined || !Number.isFinite(seconds)) {
+    return null;
+  }
+  if (Math.abs(seconds) < 0.005) return null;
+  const strength = Math.min(
+    1,
+    Math.max(0.3, Math.abs(seconds) / Math.max(scaleSeconds, 0.001))
+  );
+  const alpha = Math.round(strength * (dim ? 0.35 : 1) * 100) / 100;
+  return seconds < 0
+    ? `rgba(34, 197, 94, ${alpha})`
+    : `rgba(239, 68, 68, ${alpha})`;
+};
 
-      if (wraps) {
-        const endIntWrap = Math.ceil(endFloat);
-        for (let j = 0; j <= endIntWrap; j++) {
-          ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
-        }
-      }
-    } else {
-      // Clockwise: race progress maps to DECREASING path indices.
-      // A sector wraps when endFloat > startFloat (it crosses the array
-      // boundary from 0 back to n-1).
-      const wraps = endFloat > startFloat;
-      const endInt = wraps ? 0 : Math.floor(endFloat);
+/**
+ * Paint the delta map: `current` holds this lap's per-segment time difference
+ * against the reference, `previous` last lap's. Segments not yet driven this
+ * lap fall back to last lap's value, dimmed, so what is coming up stays
+ * visible. Segments are equal slices of lap distance.
+ */
+export const drawDeltaSegments = (
+  ctx: CanvasRenderingContext2D,
+  trackPathPoints: { x: number; y: number }[],
+  totalLength: number,
+  intersectionLength: number,
+  direction: 'clockwise' | 'anticlockwise',
+  current: readonly (number | null)[],
+  previous: readonly (number | null)[] | null,
+  trackLineWidth: number,
+  scaleSeconds: number
+) => {
+  const count = Math.max(current.length, previous?.length ?? 0);
+  if (trackPathPoints.length < 2 || count === 0) return;
 
-      for (let j = startInt; j >= endInt; j--) {
-        ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
-      }
+  ctx.save();
+  ctx.lineWidth = trackLineWidth;
+  ctx.lineCap = 'butt';
+  ctx.lineJoin = 'round';
 
-      if (wraps) {
-        const endIntWrap = Math.floor(endFloat);
-        for (let j = n - 1; j >= endIntWrap; j--) {
-          ctx.lineTo(trackPathPoints[j].x, trackPathPoints[j].y);
-        }
-      }
-    }
+  for (let i = 0; i < count; i++) {
+    const live = current[i];
+    const color =
+      live !== null && live !== undefined
+        ? deltaSegmentColor(live, scaleSeconds)
+        : deltaSegmentColor(previous?.[i], scaleSeconds, true);
+    if (!color) continue;
 
-    ctx.stroke();
+    const startFloat = progressToFloatIndex(
+      i / count,
+      trackPathPoints,
+      totalLength,
+      intersectionLength,
+      direction
+    );
+    const endFloat = progressToFloatIndex(
+      ((i + 1) % count) / count,
+      trackPathPoints,
+      totalLength,
+      intersectionLength,
+      direction
+    );
+    ctx.strokeStyle = color;
+    strokeTrackRange(ctx, trackPathPoints, startFloat, endFloat, direction);
   }
 
   ctx.restore();

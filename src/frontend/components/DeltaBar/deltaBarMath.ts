@@ -22,7 +22,11 @@ const FIELDS = {
   ],
 } as const satisfies Record<
   DeltaBarReference,
-  readonly [keyof TrackStateSnapshot, keyof TrackStateSnapshot, keyof TrackStateSnapshot]
+  readonly [
+    keyof TrackStateSnapshot,
+    keyof TrackStateSnapshot,
+    keyof TrackStateSnapshot,
+  ]
 >;
 
 /**

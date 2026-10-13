@@ -252,6 +252,17 @@ export const TrackMapSettings = () => {
 
                     <SettingDivider />
 
+                    <SettingProp path="deltaMap.enabled" />
+                    {settings.config.deltaMap?.enabled && (
+                      <div className="ml-4 space-y-4">
+                        <SettingProp path="deltaMap.reference" />
+                        <SettingProp path="deltaMap.scaleSeconds" />
+                        <SettingProp path="deltaMap.showPreviousLap" />
+                      </div>
+                    )}
+
+                    <SettingDivider />
+
                     <SettingToggleRow
                       title="Sector Colors"
                       description={`Color each sector based on your session performance (purple: session best, green: within ${greenPct}%, yellow: within ${yellowPct}%, red: ${yellowPct}%+ off pace). Thresholds are set in Sector Delta settings.`}

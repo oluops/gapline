@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { drawDrivers, getCachedTextVisualOffset } from './trackDrawingUtils';
+import { deltaSegmentColor } from './trackDrawingUtils';
 
 describe('trackDrawingUtils', () => {
   let ctx: CanvasRenderingContext2D;
@@ -382,5 +383,22 @@ describe('trackDrawingUtils', () => {
       // Should not display empty text when sessionPosition is undefined or 0
       expect(fillTextCalls.length).toBeLessThanOrEqual(0);
     });
+  });
+});
+
+describe('deltaSegmentColor', () => {
+  it('is green for time gained and red for time lost', () => {
+    expect(deltaSegmentColor(-0.05, 0.05)).toBe('rgba(34, 197, 94, 1)');
+    expect(deltaSegmentColor(0.05, 0.05)).toBe('rgba(239, 68, 68, 1)');
+  });
+
+  it('fades small differences but keeps them visible', () => {
+    expect(deltaSegmentColor(0.01, 0.05)).toBe('rgba(239, 68, 68, 0.3)');
+  });
+
+  it('dims last lap and leaves near-zero or unknown segments uncoloured', () => {
+    expect(deltaSegmentColor(0.05, 0.05, true)).toBe('rgba(239, 68, 68, 0.35)');
+    expect(deltaSegmentColor(0.001, 0.05)).toBeNull();
+    expect(deltaSegmentColor(null, 0.05)).toBeNull();
   });
 });

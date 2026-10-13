@@ -284,6 +284,20 @@ export interface TrackMapConfig {
     enabled: boolean;
   };
   playerIcon?: { enabled: boolean; fileName: string };
+  /** Paint the track by where time is gained or lost against a reference lap. */
+  deltaMap?: DeltaMapConfig;
+}
+
+/** Reference lap for the track map's delta colouring. */
+export type DeltaMapReference = 'trackBest' | 'sessionFastest' | 'personalBest';
+
+export interface DeltaMapConfig {
+  enabled: boolean;
+  reference: DeltaMapReference;
+  /** Time gained/lost in one segment at which its colour is at full strength. */
+  scaleSeconds: number;
+  /** Show last lap's colours, dimmed, on the part of the lap not driven yet. */
+  showPreviousLap: boolean;
 }
 
 export interface FlatTrackMapConfig {
@@ -961,10 +975,7 @@ export interface CarSystemsConfig {
 
 /** Reference lap the delta bar compares against (iRacing LapDeltaTo*). */
 export type DeltaBarReference =
-  | 'best'
-  | 'sessionBest'
-  | 'optimal'
-  | 'sessionLast';
+  'best' | 'sessionBest' | 'optimal' | 'sessionLast';
 
 export interface DeltaBarConfig {
   background: { opacity: number };

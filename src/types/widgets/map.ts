@@ -37,8 +37,48 @@ export default defineWidgetManifest({
     styling: { isMinimalTrack: false, isMinimalCar: false },
     sectorColoring: { enabled: false },
     playerIcon: { enabled: false, fileName: '' },
+    deltaMap: {
+      enabled: false,
+      reference: 'trackBest',
+      scaleSeconds: 0.05,
+      showPreviousLap: true,
+    },
   },
   properties: {
+    'deltaMap.enabled': {
+      type: 'boolean',
+      label: 'Delta Map',
+      description:
+        'Colour the track by where you gain (green) or lose (red) time against a reference lap, updated as you drive. Replaces sector colours while on.',
+    },
+    'deltaMap.reference': {
+      type: 'enum',
+      label: 'Compare Against',
+      description:
+        "Track Best is the fastest clean lap recorded here in your class by anyone, kept across sessions. Session Fastest is this session's fastest in your class. Personal Best is your own best this session.",
+      options: [
+        { value: 'trackBest', label: 'Track Best' },
+        { value: 'sessionFastest', label: 'Session Fastest' },
+        { value: 'personalBest', label: 'Personal Best' },
+      ],
+      control: 'select',
+    },
+    'deltaMap.scaleSeconds': {
+      type: 'number',
+      label: 'Full Colour At',
+      description:
+        'Time gained or lost within one short segment (1% of the lap) at which its colour is fully saturated. Lower values make small differences stand out.',
+      min: 0.01,
+      max: 0.3,
+      step: 0.01,
+      units: ' s',
+    },
+    'deltaMap.showPreviousLap': {
+      type: 'boolean',
+      label: 'Show Last Lap Ahead',
+      description:
+        "Show last lap's colours, dimmed, on the part of the track you haven't reached yet this lap.",
+    },
     trackLineWidth: {
       type: 'number',
       label: 'Track Line Width',

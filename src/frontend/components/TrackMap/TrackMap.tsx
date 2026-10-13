@@ -5,6 +5,7 @@ import { useTrackMapSettings } from './hooks/useTrackMapSettings';
 import { useHighlightColor } from './hooks/useHighlightColor';
 import { useGhostSectorColors } from './hooks/useGhostSectorColors';
 import { usePlayerIconImage } from './hooks/usePlayerIconImage';
+import { useLapDeltaMap } from './hooks/useLapDeltaMap';
 import { TrackCanvas } from './TrackCanvas';
 import { useDriverLivePositions } from '@irdashies/domain';
 import {
@@ -53,6 +54,24 @@ export const TrackMap = ({ embedded = false }: { embedded?: boolean }) => {
   const playerIconDataUrl = usePlayerIconImage(
     playerIconEnabled ? settings?.playerIcon?.fileName : undefined
   );
+  const deltaMapEnabled = settings?.deltaMap?.enabled ?? false;
+  const showPreviousLap = settings?.deltaMap?.showPreviousLap ?? true;
+  const { current: deltaCurrent, previous: deltaPrevious } = useLapDeltaMap(
+    deltaMapEnabled,
+    settings?.deltaMap?.reference ?? 'trackBest'
+  );
+  // Stable identity per completed segment, so the static layer redraws only
+  // when the map actually changes.
+  const deltaSegments = useMemo(
+    () =>
+      deltaMapEnabled
+        ? {
+            current: deltaCurrent,
+            previous: showPreviousLap ? deltaPrevious : null,
+          }
+        : undefined,
+    [deltaMapEnabled, showPreviousLap, deltaCurrent, deltaPrevious]
+  );
   const driverLivePositions = useDriverLivePositions({
     enabled: settings?.displayMode === 'livePosition',
   });
@@ -94,6 +113,8 @@ export const TrackMap = ({ embedded = false }: { embedded?: boolean }) => {
         currentSectorIdx={
           settings?.sectorColoring?.enabled ? currentSectorIdx : undefined
         }
+        deltaSegments={deltaSegments}
+        deltaScaleSeconds={settings?.deltaMap?.scaleSeconds ?? 0.05}
         playerIconDataUrl={playerIconDataUrl}
         driverLivePositions={driverLivePositions}
         debug={debug}
