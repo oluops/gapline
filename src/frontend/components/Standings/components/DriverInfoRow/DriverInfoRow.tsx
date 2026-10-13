@@ -25,6 +25,7 @@ import { PositionChangeCell } from './cells/PositionChangeCell';
 import { LastTimeCell } from './cells/LastTimeCell';
 import { PitStatusCell } from './cells/PitStatusCell';
 import { PushToPassCell } from './cells/PushToPassCell';
+import { GearCell } from './cells/GearCell';
 import { PositionCell } from './cells/PositionCell';
 import { TeamNameCell } from './cells/TeamNameCell';
 
@@ -669,6 +670,16 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
           (config?.pushToPass?.enabled ?? false),
         component: <PushToPassCell key="pushToPass" state={p2pDisplayState} />,
       },
+      {
+        id: 'gear',
+        // Gated on `enabled` only: layouts saved before this column existed
+        // have no 'gear' in displayOrder, and the ordering logic below (like
+        // the header) appends enabled columns the saved order doesn't name.
+        shouldRender: config?.gear?.enabled ?? false,
+        component: (
+          <GearCell key="gear" carIdx={carIdx} compactMode={compactMode} />
+        ),
+      },
     ];
 
     // Applied once, ahead of the ordering logic, so a hidden column is gone
@@ -754,6 +765,7 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
     p2pDisplayState,
     currentLap,
     lapCountUnknown,
+    carIdx,
   ]);
 
   return (

@@ -65,6 +65,12 @@ const copyRoundedPositionArray = (
   return changed;
 };
 
+/**
+ * Lap deltas change every frame; millisecond precision is all a delta bar can
+ * show and keeps sub-millisecond float noise from bumping the version.
+ */
+const roundDelta = (value: number): number => Math.round(value * 1000) / 1000;
+
 export class TrackStateProcessor implements TelemetryProcessor<TrackStateSnapshot> {
   readonly channel = 'track-state.snapshot';
   readonly tickRateHz = 25;
@@ -178,6 +184,38 @@ export class TrackStateProcessor implements TelemetryProcessor<TrackStateSnapsho
       this.set('lastLapTime', numberValue(frame, 'LapLastLapTime')) || changed;
     changed =
       this.set('lapCompleted', numberValue(frame, 'LapCompleted')) || changed;
+    changed =
+      this.set('lapDeltaBest', roundDelta(numberValue(frame, 'LapDeltaToBestLap'))) ||
+      changed;
+    changed =
+      this.set('lapDeltaBestOk', booleanValue(frame, 'LapDeltaToBestLap_OK')) || changed;
+    changed =
+      this.set('lapDeltaBestRate', roundDelta(numberValue(frame, 'LapDeltaToBestLap_DD'))) ||
+      changed;
+    changed =
+      this.set('lapDeltaSessionBest', roundDelta(numberValue(frame, 'LapDeltaToSessionBestLap'))) ||
+      changed;
+    changed =
+      this.set('lapDeltaSessionBestOk', booleanValue(frame, 'LapDeltaToSessionBestLap_OK')) || changed;
+    changed =
+      this.set('lapDeltaSessionBestRate', roundDelta(numberValue(frame, 'LapDeltaToSessionBestLap_DD'))) ||
+      changed;
+    changed =
+      this.set('lapDeltaOptimal', roundDelta(numberValue(frame, 'LapDeltaToOptimalLap'))) ||
+      changed;
+    changed =
+      this.set('lapDeltaOptimalOk', booleanValue(frame, 'LapDeltaToOptimalLap_OK')) || changed;
+    changed =
+      this.set('lapDeltaOptimalRate', roundDelta(numberValue(frame, 'LapDeltaToOptimalLap_DD'))) ||
+      changed;
+    changed =
+      this.set('lapDeltaSessionLast', roundDelta(numberValue(frame, 'LapDeltaToSessionLastlLap'))) ||
+      changed;
+    changed =
+      this.set('lapDeltaSessionLastOk', booleanValue(frame, 'LapDeltaToSessionLastlLap_OK')) || changed;
+    changed =
+      this.set('lapDeltaSessionLastRate', roundDelta(numberValue(frame, 'LapDeltaToSessionLastlLap_DD'))) ||
+      changed;
     if (changed) this.latest.version += 1;
   }
 
@@ -208,6 +246,18 @@ export class TrackStateProcessor implements TelemetryProcessor<TrackStateSnapsho
     this.latest.sessionNum = null;
     this.latest.lastLapTime = 0;
     this.latest.lapCompleted = 0;
+    this.latest.lapDeltaBest = 0;
+    this.latest.lapDeltaBestOk = false;
+    this.latest.lapDeltaBestRate = 0;
+    this.latest.lapDeltaSessionBest = 0;
+    this.latest.lapDeltaSessionBestOk = false;
+    this.latest.lapDeltaSessionBestRate = 0;
+    this.latest.lapDeltaOptimal = 0;
+    this.latest.lapDeltaOptimalOk = false;
+    this.latest.lapDeltaOptimalRate = 0;
+    this.latest.lapDeltaSessionLast = 0;
+    this.latest.lapDeltaSessionLastOk = false;
+    this.latest.lapDeltaSessionLastRate = 0;
     this.latest.version += 1;
   }
 

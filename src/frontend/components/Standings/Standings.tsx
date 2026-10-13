@@ -53,6 +53,7 @@ export const COLUMN_LABELS: Record<string, string> = {
   avgLapTime: 'AVG',
   lapCount: 'LAPS',
   pushToPass: 'P2P',
+  gear: 'GEAR',
 };
 
 const COLUMN_ORDER = Object.keys(COLUMN_LABELS);

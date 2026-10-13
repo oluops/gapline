@@ -32,6 +32,7 @@ import { useDashboard } from '@irdashies/context';
 import { SlowCarAheadSettings } from './sections/SlowCarAheadSettings';
 import { SectorDeltaSettings } from './sections/SectorDeltaSettings';
 import { DeltaSpeedSettings } from './sections/DeltaSpeedSettings';
+import { DeltaBarSettings } from './sections/DeltaBarSettings';
 import { CarSystemsSettings } from './sections/CarSystemsSettings';
 import { HeartRateSettings } from './sections/HeartRateSettings';
 import { CornerNameSettings } from './sections/CornerNameSettings';
@@ -71,6 +72,7 @@ export const WIDGET_SETTINGS: Record<
   slowcarahead: SlowCarAheadSettings,
   sectordelta: SectorDeltaSettings,
   deltaspeed: DeltaSpeedSettings,
+  deltabar: DeltaBarSettings,
   carsystems: CarSystemsSettings,
   heartrate: HeartRateSettings,
   cornername: CornerNameSettings,

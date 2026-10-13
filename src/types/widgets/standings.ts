@@ -296,6 +296,7 @@ export default defineWidgetManifest({
     },
     showOnlyWhenOnTrack: false,
     pushToPass: { enabled: false },
+    gear: { enabled: false },
     displayOrder: [
       'position',
       'carNumber',
@@ -317,6 +318,7 @@ export default defineWidgetManifest({
       'avgLapTime',
       'lapCount',
       'pushToPass',
+      'gear',
     ],
     driverTag: { enabled: false },
     sessionVisibility: {

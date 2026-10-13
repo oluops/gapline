@@ -70,6 +70,23 @@ export interface TrackStateSnapshot {
   lastLapTime?: number;
   /** Completed lap count (LapCompleted) — pairs with lastLapTime. */
   lapCompleted?: number;
+  /**
+   * iRacing's live lap delta (seconds, + = slower) against each reference,
+   * whether that delta is valid right now, and its rate of change (s/s,
+   * + = losing time). Optional so existing snapshot literals compile.
+   */
+  lapDeltaBest?: number;
+  lapDeltaBestOk?: boolean;
+  lapDeltaBestRate?: number;
+  lapDeltaSessionBest?: number;
+  lapDeltaSessionBestOk?: boolean;
+  lapDeltaSessionBestRate?: number;
+  lapDeltaOptimal?: number;
+  lapDeltaOptimalOk?: boolean;
+  lapDeltaOptimalRate?: number;
+  lapDeltaSessionLast?: number;
+  lapDeltaSessionLastOk?: boolean;
+  lapDeltaSessionLastRate?: number;
   version: number;
 }
 
@@ -426,6 +443,7 @@ export interface StandingsSnapshot {
   carIdxSessionFlags: number[];
   carIdxP2PStatus: boolean[];
   carIdxP2PCount: number[];
+  carIdxGear: number[];
   sessionUniqueId: number;
   sessionTime: number;
   sessionState: number;

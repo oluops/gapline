@@ -8,6 +8,32 @@ const frame = (values: Record<string, unknown[]>): Telemetry =>
   ) as unknown as Telemetry;
 
 describe('TrackStateProcessor', () => {
+  it('projects iRacing lap deltas, validity, and rate per reference', () => {
+    const processor = new TrackStateProcessor();
+    processor.onFrame(
+      frame({
+        LapDeltaToSessionBestLap: [-0.31249],
+        LapDeltaToSessionBestLap_OK: [true],
+        LapDeltaToSessionBestLap_DD: [-0.0804],
+        LapDeltaToBestLap: [1.2],
+        LapDeltaToBestLap_OK: [false],
+        LapDeltaToSessionLastlLap: [0.5],
+        LapDeltaToSessionLastlLap_OK: [1],
+      })
+    );
+
+    expect(processor.snapshot()).toMatchObject({
+      lapDeltaSessionBest: -0.312,
+      lapDeltaSessionBestOk: true,
+      lapDeltaSessionBestRate: -0.08,
+      lapDeltaBest: 1.2,
+      lapDeltaBestOk: false,
+      lapDeltaSessionLast: 0.5,
+      lapDeltaSessionLastOk: true,
+      lapDeltaOptimalOk: false,
+    });
+  });
+
   it('projects positional, pit, and warning state', () => {
     const processor = new TrackStateProcessor();
     processor.onFrame(

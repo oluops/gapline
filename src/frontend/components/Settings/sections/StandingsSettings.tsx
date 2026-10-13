@@ -103,6 +103,7 @@ const sortableSettings: SortableSetting[] = [
     configKey: 'lapCount',
   },
   { id: 'pushToPass', label: 'Push to Pass', configKey: 'pushToPass' },
+  { id: 'gear', label: 'Gear', configKey: 'gear' },
 ];
 
 const defaultConfig = getWidgetDefaultConfig('standings');

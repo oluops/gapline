@@ -28,6 +28,14 @@ const frame = (
   }) as Telemetry;
 
 describe('StandingsProcessor', () => {
+  it('projects every car\'s current gear', () => {
+    const processor = new StandingsProcessor();
+    processor.init(session);
+    processor.onFrame(frame(10, { CarIdxGear: { value: [3, -1] } }));
+
+    expect(processor.snapshot().carIdxGear).toEqual([3, -1]);
+  });
+
   it('projects only the driver state consumed by standings', () => {
     const processor = new StandingsProcessor();
     processor.init(session);

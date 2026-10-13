@@ -74,6 +74,7 @@ const sortableSettings: SortableSetting[] = [
     hasSubSetting: true,
   },
   { id: 'pushToPass', label: 'Push to Pass', configKey: 'pushToPass' },
+  { id: 'gear', label: 'Gear', configKey: 'gear' },
 ];
 
 const defaultConfig = getWidgetDefaultConfig('relative');

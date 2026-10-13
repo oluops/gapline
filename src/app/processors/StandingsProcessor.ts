@@ -128,6 +128,7 @@ export class StandingsProcessor implements TelemetryProcessor<StandingsSnapshot>
     );
     copyBooleanArray(frame, 'CarIdxP2P_Status', this.latest.carIdxP2PStatus);
     copyNumberArray(frame, 'CarIdxP2P_Count', this.latest.carIdxP2PCount);
+    copyNumberArray(frame, 'CarIdxGear', this.latest.carIdxGear);
     const sessionState = numberValue(frame, 'SessionState') ?? 0;
     this.latest.sessionUniqueId = numberValue(frame, 'SessionUniqueID') ?? 0;
     this.latest.sessionTime = sessionTime;
@@ -212,6 +213,7 @@ export class StandingsProcessor implements TelemetryProcessor<StandingsSnapshot>
     this.latest.carIdxSessionFlags.length = 0;
     this.latest.carIdxP2PStatus.length = 0;
     this.latest.carIdxP2PCount.length = 0;
+    this.latest.carIdxGear.length = 0;
     this.latest.sessionUniqueId = 0;
     this.latest.sessionTime = 0;
     this.latest.sessionState = 0;
@@ -239,6 +241,7 @@ export class StandingsProcessor implements TelemetryProcessor<StandingsSnapshot>
       carIdxSessionFlags: [],
       carIdxP2PStatus: [],
       carIdxP2PCount: [],
+      carIdxGear: [],
       sessionUniqueId: 0,
       sessionTime: 0,
       sessionState: 0,

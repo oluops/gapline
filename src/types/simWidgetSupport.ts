@@ -66,6 +66,8 @@ export const LMU_DISABLED_WIDGETS: readonly string[] = [
   'broadcastticker',
   'broadcastweather',
   'carsystems',
+  // iRacing's LapDeltaTo* telemetry has no LMU equivalent mapped yet.
+  'deltabar',
   'deltaspeed',
   'fastercarsfrombehind',
   'flatmap',

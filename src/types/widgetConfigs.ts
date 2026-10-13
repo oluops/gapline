@@ -189,6 +189,7 @@ export interface StandingsConfig {
   teamName: { enabled: boolean; subtext?: 'none' | 'driverName' };
   pitStatus: PitStatusConfig;
   pushToPass: { enabled: boolean };
+  gear?: { enabled: boolean };
   driverTag: { enabled: boolean; widthPx?: number };
   displayOrder: string[];
   sessionVisibility: SessionVisibilitySettings;
@@ -226,6 +227,7 @@ export interface RelativeConfig {
   teamName: { enabled: boolean };
   pitStatus: PitStatusConfig;
   pushToPass: { enabled: boolean };
+  gear?: { enabled: boolean };
   driverTag: { enabled: boolean; widthPx?: number };
   lapTimeDeltas: { enabled: boolean; numLaps: number; decimalPlaces: number };
   displayOrder: string[];
@@ -957,6 +959,27 @@ export interface CarSystemsConfig {
   showOnlyWhenOnTrack: boolean;
 }
 
+/** Reference lap the delta bar compares against (iRacing LapDeltaTo*). */
+export type DeltaBarReference =
+  | 'best'
+  | 'sessionBest'
+  | 'optimal'
+  | 'sessionLast';
+
+export interface DeltaBarConfig {
+  background: { opacity: number };
+  reference: DeltaBarReference;
+  /** Delta (seconds) at which the bar reaches the edge. */
+  rangeSeconds: number;
+  /** Decimal places on the numeric readout. */
+  decimalPlaces: number;
+  showNumber: boolean;
+  /** Tint the readout by whether time is currently being gained or lost. */
+  showTrend: boolean;
+  showOnlyWhenOnTrack: boolean;
+  sessionVisibility: SessionVisibilitySettings;
+}
+
 export interface DeltaSpeedConfig {
   background: { opacity: number };
   /**
@@ -1402,6 +1425,7 @@ export interface WidgetConfigMap {
   slowcarahead: SlowCarAheadConfig;
   sectordelta: SectorDeltaConfig;
   deltaspeed: DeltaSpeedConfig;
+  deltabar: DeltaBarConfig;
   carsystems: CarSystemsConfig;
   heartrate: HeartRateConfig;
   cornername: CornerNameOverlayConfig;
@@ -1520,6 +1544,7 @@ export type InformationBarWidgetSettings =
 export type SlowCarAheadWidgetSettings = BaseWidgetSettings<SlowCarAheadConfig>;
 export type SectorDeltaWidgetSettings = BaseWidgetSettings<SectorDeltaConfig>;
 export type DeltaSpeedWidgetSettings = BaseWidgetSettings<DeltaSpeedConfig>;
+export type DeltaBarWidgetSettings = BaseWidgetSettings<DeltaBarConfig>;
 export type CarSystemsWidgetSettings = BaseWidgetSettings<CarSystemsConfig>;
 export type HeartRateWidgetSettings = BaseWidgetSettings<HeartRateConfig>;
 export type CornerNameWidgetSettings =

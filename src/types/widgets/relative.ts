@@ -80,6 +80,7 @@ export default defineWidgetManifest({
       decimalPlaces: 1,
     },
     pushToPass: { enabled: false },
+    gear: { enabled: false },
     displayOrder: [
       'position',
       'carNumber',
@@ -98,6 +99,7 @@ export default defineWidgetManifest({
       'compound',
       'lapTimeDeltas',
       'pushToPass',
+      'gear',
     ],
     driverTag: { enabled: false },
     titleBar: {
