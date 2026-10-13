@@ -33,10 +33,23 @@ jobs:
       - name: Package Windows app
         run: npx electron-forge package
 
+      # Same check as the official release job: the iRacing reader must be
+      # unpacked next to the app or live telemetry can never load.
+      - name: Verify native iRacing addon is packaged
+        shell: pwsh
+        run: |
+          $addon = 'out/irdashies-win32-x64/resources/app.asar.unpacked/.vite/build/Release/irsdk_node.node'
+          if (-not (Test-Path -LiteralPath $addon -PathType Leaf)) {
+            throw "Native addon missing from package: $addon"
+          }
+
       - name: Upload app
         uses: actions/upload-artifact@v4
         with:
           name: irdashies-windows
           path: out/irdashies-win32-x64
+          # The native addon lives under a .vite folder; without this the
+          # artifact silently drops it and the app cannot read iRacing.
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
