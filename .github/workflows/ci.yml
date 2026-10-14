@@ -12,6 +12,11 @@ on:
         required: true
         type: boolean
         default: false
+      signing_smoke_test:
+        description: Build and sign Windows artifacts without creating a release
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -70,6 +75,11 @@ jobs:
 
       - name: Run ${{ matrix.check.name }}
         run: ${{ matrix.check.command }}
+
+      - name: Test Squirrel signing package updates
+        if: matrix.check.name == 'Tests'
+        shell: pwsh
+        run: ./tools/signing/rebuild-squirrel.spec.ps1
 
       - name: Upload coverage report
         if: matrix.check.name == 'Tests'
