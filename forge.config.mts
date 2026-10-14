@@ -20,7 +20,10 @@ import path from 'node:path';
  * because packaging has to keep working before `npm run irsdk:build` has
  * produced it. Absent, a packaged build is exactly what it was before.
  */
-const lmuRecorderPath = path.resolve(import.meta.dirname, 'build/Release/lmu_replay.exe');
+const lmuRecorderPath = path.resolve(
+  import.meta.dirname,
+  'build/Release/lmu_replay.exe'
+);
 const optionalResources = fs.existsSync(lmuRecorderPath)
   ? [lmuRecorderPath]
   : [];
@@ -66,10 +69,11 @@ const config: ForgeConfig = {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'tariknz',
-          name: 'irdashies',
+          owner: 'oluops',
+          name: 'gapline',
         },
-        prerelease: true,
+        prerelease: false,
+        draft: false,
       },
     },
   ],

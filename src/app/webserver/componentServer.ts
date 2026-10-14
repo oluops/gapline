@@ -404,8 +404,8 @@ export async function startComponentServer(
       }
 
       const title = widgetMatch
-        ? `irDashies - ${widgetMatch[1]}`
-        : 'irDashies - Dashboard';
+        ? `Gapline - ${widgetMatch[1]}`
+        : 'Gapline - Dashboard';
 
       sendHTML(res, renderIframeShell(title, buildDashboardViewUrl(params)));
       return;
@@ -468,7 +468,7 @@ export async function startComponentServer(
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>irDashies</title>
+        <title>Gapline</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body { background: #0f172a; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; display: flex; justify-content: center; min-height: 100vh; }
@@ -485,7 +485,7 @@ export async function startComponentServer(
       </head>
       <body>
         <div class="container">
-          <h1>irDashies</h1>
+          <h1>Gapline</h1>
           <h2>Full dashboard</h2>
           <div class="profiles">${profileLinks}</div>
           ${widgetSection}

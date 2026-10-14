@@ -1,53 +1,48 @@
-# irDashies - Real-time Racing Overlays
+# Gapline — iRacing Overlays
 
 <div align="center" style="padding-bottom: 20px;">
-  <img src="./docs/assets/icons/logo.svg" alt="Logo" width="200" height="200">
-
-**[www.irdashies.com](https://www.irdashies.com)**
-
+  <img src="./docs/assets/icons/logo.svg" alt="Gapline logo" width="160" height="160">
 </div>
 
-An open-source platform for building real-time racing overlays and utilities using React and Electron, with iRacing support and beta support for Le Mans Ultimate. Designed to be approachable for web developers — no iRacing SDK, C++, or simulator installation required to get started.
+Free, open-source overlays for iRacing: relative, standings, delta bar and delta map, radar and spotter, pit helper, fuel calculator, track maps and much more. Gapline reads iRacing's telemetry locally on your PC — no account, no login, no data collection.
 
-For bug reports, feature requests, or to get involved, join our [Discord](https://discord.gg/YMAqduF2Ft).
+Gapline is built on [irDashies](https://github.com/tariknz/irdashies) by Tarik Alani and contributors (MIT). Most of the app is their work; see [Credits](#credits).
 
-## Try it out
+## Download and install
 
-You can try it out by downloading the latest release from the [releases page](https://github.com/tariknz/irdashies/releases).
+1. Download the **Gapline Setup .exe** from the [latest release](https://github.com/oluops/gapline/releases/latest).
+2. Run it. Because the installer isn't code-signed yet, Windows SmartScreen will warn about an unknown publisher — click **More info → Run anyway**.
+3. Start iRacing and load into a session (in the car or garage). Overlays connect automatically.
+4. Open settings from the tray icon, enable the widgets you want, and press **F6** to move them into place.
 
-Install the .exe and run it. The application will automatically update when a new version is available.
+Gapline updates itself automatically when a new release is published.
+
+## New in Gapline
+
+On top of everything irDashies provides:
+
+- **Delta Map** (Track Map → Delta Map): paints the track green where you gain time and red where you lose it against a reference lap, live as you drive, with last lap shown dimmed on the part of the track you haven't reached yet. Compare against **Track Best** (the fastest clean lap recorded at that track in your class, by anyone, kept across sessions), **Session Fastest**, or your **Personal Best**.
+- **Delta Bar** widget: classic time-delta bar — green when ahead, red when behind — against session best, all-time best, optimal or last lap, with a trend colour that shows whether you are gaining or losing time right now.
+- **Gear column** for Relative and Standings: see what gear every other car is in.
 
 ## Table of Contents
 
-- [Introduction](#introduction)
 - [Supported simulators](#supported-simulators)
 - [Available overlays](#available-overlays)
-- [Prerequisites](#prerequisites-for-development)
-- [Installation](#installation-for-development)
-- [Usage](#usage-for-development)
-- [Folder Structure](#folder-structure)
-- [Storybook](#storybook)
-- [Package (create .exe)](#package-create-exe)
-- [Testing](#testing)
-- [Linting](#linting)
-- [Sponsors](#sponsors)
-- [Contributing](#contributing)
+- [Prerequisites (for development)](#prerequisites-for-development)
+- [Credits](#credits)
 - [License](#license)
-
-## Introduction
-
-This project is built with React and Electron and retrieves live telemetry from iRacing and Le Mans Ultimate to power configurable overlays and race utilities.
 
 ## Supported simulators
 
 iRacing is the primary supported simulator. Le Mans Ultimate support is in beta as of [v2.0.0](https://github.com/tariknz/irdashies/releases/tag/v2.0.0), with a limited set of supported widgets.
 
-Choose **Auto**, **iRacing**, or **Le Mans Ultimate** in **Settings > General > Simulator**. Auto detects the running simulator and follows simulator changes without restarting irDashies. If both simulators are active when detection runs, iRacing takes priority; select Le Mans Ultimate explicitly if needed. Unsupported widgets are hidden for the active simulator.
+Choose **Auto**, **iRacing**, or **Le Mans Ultimate** in **Settings > General > Simulator**. Auto detects the running simulator and follows simulator changes without restarting Gapline. If both simulators are active when detection runs, iRacing takes priority; select Le Mans Ultimate explicitly if needed. Unsupported widgets are hidden for the active simulator.
 
 ### Le Mans Ultimate setup and limitations
 
 1. In LMU, enable **Settings > Gameplay > Enable Plugins**, then restart the simulator.
-2. Start irDashies and load into an LMU session to receive telemetry.
+2. Start Gapline and load into an LMU session to receive telemetry.
 
 **Supported overlays:** Standings, Relative, Input, Lap Trace, Pitlane Helper, Corner Names, Battle, Flag, and Information Bar. Telemetry Inspector is also available for diagnostics. All other widgets are currently unavailable in LMU, including Fuel Calculator, both track maps, Radar, Gantry, Car Systems, Lap Timer, Tachometer, and Shift Light.
 
@@ -268,6 +263,8 @@ Displays drive relative delta information for the current session.
 Displays a track map with the current position of the cars on track and the track layout with the turn numbers / names.
 
 **Features:**
+
+- **Delta Map** (new in Gapline): colour the track by where you gain (green) or lose (red) time against Track Best, Session Fastest or Personal Best, updated every 1% of the lap as you drive
 
 - Real-time car positions on track (live telemetry)
 - Track layout visualization
@@ -509,7 +506,7 @@ Helps you manage your pit stops with clear visual guidance. It assists with spee
 - Current lap: Show current lap time, highlights green for personal best and purple for session best.
 - Predicted lap: Shows an estimate of the lap time based on the current delta.
 - Best and last lap: Display the best and last lap times.
-- Personal best lap: Optionally show the best lap ever recorded by irDashies for the current car and track combo, persisted across sessions.
+- Personal best lap: Optionally show the best lap ever recorded by Gapline for the current car and track combo, persisted across sessions.
 - Lap history: Show a history of your most recent lap times along with optional deltas.
 - Optionally hide pit laps from the lap history list and graph.
 - Fully configurable: Decide which laps your interested in and toggle them on and off individually.
@@ -533,6 +530,17 @@ Displays per-sector timing deltas for the current lap, colour-coded by performan
 - Adjustable background opacity
 
 ![Sector Delta](./docs/assets/sector-delta.png)
+
+### Delta Bar
+
+New in Gapline. Live lap time delta from iRacing's own delta telemetry.
+
+**Features:**
+
+- Green fill to the left when ahead of the reference, red to the right when behind, with the signed delta in seconds
+- Reference: Session Best, All-time Best, Optimal or Last Lap
+- Trend colour on the number shows whether you are gaining or losing time right now
+- Configurable bar range and decimal places
 
 ### Delta Speed
 
@@ -638,7 +646,7 @@ A race control window with live standings, an automatic incident feed, and a per
 - Optional always-on-top mode, controlled from the tab bar or settings for windowed or borderless simulators
 - Dock Fuel Calculator, Track Map, or Flat Track Map panels beneath the incident feed, side by side or in tabs, with optional Gantry-only fuel layouts
 - Review recorded incidents and lap history while watching an iRacing replay; history follows the selected replay session and requires recordings made by irDashies on this PC
-- Final standings and lap graphs remain available after iRacing closes, including when switching tabs, until the next session loads or irDashies closes
+- Final standings and lap graphs remain available after iRacing closes, including when switching tabs, until the next session loads or Gapline closes
 - Standings list
   - Grouped by car class: position, car number, driver name, tyre compound, iRating, pit/DNF status
   - Gap to the class leader, interval to the car ahead, best lap and last lap
@@ -719,7 +727,7 @@ A race control window with live standings, an automatic incident feed, and a per
 
 ## Installation (for development)
 
-To install IRDashies, follow these steps:
+To install Gapline for development, follow these steps:
 
 1. Clone the repository
 2. Navigate to the project directory
@@ -743,7 +751,7 @@ npm run storybook
 
 ## Usage (for development)
 
-To start using IRDashies, run the following command:
+To start Gapline in development, run the following command:
 
 ```bash
 npm start
@@ -757,15 +765,15 @@ Look for the application in your app tray.
 
 For normal use, choose the simulator in **Settings > General > Simulator**. See [Supported simulators](#supported-simulators) for LMU setup and beta limitations.
 
-To override the saved simulator setting, use `irdashies.exe --sim=lmu` or
-`irdashies.exe --sim=iracing`. For development, set `IRDASHIES_SIM` instead:
+To override the saved simulator setting, use `Gapline.exe --sim=lmu` or
+`Gapline.exe --sim=iracing`. For development, set `IRDASHIES_SIM` instead:
 
 ```powershell
 $env:IRDASHIES_SIM = 'lmu'
 npm start
 ```
 
-Without an override, irDashies uses the saved simulator preference. In Auto mode,
+Without an override, Gapline uses the saved simulator preference. In Auto mode,
 it detects the running simulator and follows changes without restarting, giving
 iRacing priority if both simulators are active when detection runs.
 
@@ -784,7 +792,7 @@ npm run storybook
 The project is structured as follows:
 
 ```
-irdashies/
+gapline/
   ├── src/
   │   ├── app/
   │   ├── frontend/
@@ -844,32 +852,19 @@ npm run lint
 
 As you may know, the iRacing SDK is only available on Windows. To develop on Mac OS, there is a mock SDK that is loaded which generates some dummy data for you to work with. This is useful for developing the UI components and widgets.
 
-## Sponsors
+## Credits
 
-<table>
-  <tr>
-    <td>
-      <img src="https://signpath.org/assets/favicon-50x50.png" alt="SignPath" width="50" height="50">
-    </td>
-    <td>
-      Free code signing on Windows provided by <a href="https://signpath.io/">SignPath.io</a>, certificate by <a href="https://signpath.org/">SignPath Foundation</a>.
-    </td>
-  </tr>
-</table>
+Gapline is a fork of **[irDashies](https://github.com/tariknz/irdashies)** by Tarik Alani and its contributors, used under the MIT License. If you like Gapline, go star their project.
 
-## Acknowledgments
+This project also makes use of data from:
 
-This project makes use of data and resources from the following projects:
-
-- **[lovely-car-data](https://github.com/Lovely-Sim-Racing/lovely-car-data)** - Comprehensive car telemetry data including RPM thresholds, LED configurations, and shift point information for various racing games.
-- **[lovely-track-data](https://github.com/Lovely-Sim-Racing/lovely-track-data)** - Per-track corner names, sectors, pit-lane markers, and named straights for various racing games.
+- **[lovely-car-data](https://github.com/Lovely-Sim-Racing/lovely-car-data)** — car RPM thresholds, LED configurations and shift points.
+- **[lovely-track-data](https://github.com/Lovely-Sim-Racing/lovely-track-data)** — per-track corner names, sectors, pit-lane markers and named straights.
 
 ## Contributing
 
-We welcome contributions to the IRDashies project! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
-
-Join our discord here: https://discord.gg/YMAqduF2Ft
+Bug reports, feature requests and pull requests are welcome on the [issue tracker](https://github.com/oluops/gapline/issues). Changes that would benefit everyone may also be worth sending upstream to irDashies.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+MIT — see [LICENSE](LICENSE). The original irDashies copyright notice is retained as the license requires.

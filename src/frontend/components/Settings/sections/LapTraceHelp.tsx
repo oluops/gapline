@@ -175,10 +175,10 @@ export const LapTraceHelp = () => (
       <Topic title="Corner names come from bundled track data">
         <Note>
           The Last Corner panel and corner names come from the Lovely Sim Racing
-          dataset bundled with irDashies, not from iRacing, and it does not
-          cover every layout. Where a layout is missing, the Last Corner panel
-          does not appear at all. There is no warning, because there is nothing
-          to show.
+          dataset bundled with Gapline, not from iRacing, and it does not cover
+          every layout. Where a layout is missing, the Last Corner panel does
+          not appear at all. There is no warning, because there is nothing to
+          show.
         </Note>
         <Note>
           Coverage is per layout, not per circuit, so a circuit can have data

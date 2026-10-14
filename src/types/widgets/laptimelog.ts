@@ -71,7 +71,7 @@ export default defineWidgetManifest({
       type: 'boolean',
       label: 'Show Personal Best Lap',
       description:
-        'Shows the best lap time ever recorded by irDashies for the car and track combo.',
+        'Shows the best lap time ever recorded by Gapline for the car and track combo.',
     },
     'delta.enabled': {
       type: 'boolean',

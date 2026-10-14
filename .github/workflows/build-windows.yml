@@ -38,7 +38,7 @@ jobs:
       - name: Verify native iRacing addon is packaged
         shell: pwsh
         run: |
-          $addon = 'out/irdashies-win32-x64/resources/app.asar.unpacked/.vite/build/Release/irsdk_node.node'
+          $addon = 'out/Gapline-win32-x64/resources/app.asar.unpacked/.vite/build/Release/irsdk_node.node'
           if (-not (Test-Path -LiteralPath $addon -PathType Leaf)) {
             throw "Native addon missing from package: $addon"
           }
@@ -46,8 +46,8 @@ jobs:
       - name: Upload app
         uses: actions/upload-artifact@v4
         with:
-          name: irdashies-windows
-          path: out/irdashies-win32-x64
+          name: gapline-windows
+          path: out/Gapline-win32-x64
           # The native addon lives under a .vite folder; without this the
           # artifact silently drops it and the app cannot read iRacing.
           include-hidden-files: true

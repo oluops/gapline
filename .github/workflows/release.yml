@@ -1,0 +1,61 @@
+name: Release
+
+# Push a tag like v2.1.0 (matching package.json "version") to build the
+# Windows installer and publish it as a GitHub Release. Installed copies
+# pick up the new release automatically via update.electronjs.org.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Check tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          if ("v$version" -ne "${{ github.ref_name }}") {
+            throw "Tag ${{ github.ref_name }} does not match package.json version v$version"
+          }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build native iRacing addon
+        run: npm run irsdk:build
+
+      - name: Package app
+        run: npx electron-forge package
+
+      - name: Verify native iRacing addon is packaged
+        shell: pwsh
+        run: |
+          $addon = 'out/Gapline-win32-x64/resources/app.asar.unpacked/.vite/build/Release/irsdk_node.node'
+          if (-not (Test-Path -LiteralPath $addon -PathType Leaf)) {
+            throw "Native addon missing from package: $addon"
+          }
+
+      # Builds Setup.exe, the .nupkg and RELEASES (what auto-update needs)
+      # from the verified package, and saves the results for the release step.
+      - name: Build installer
+        run: npx electron-forge make --from-package
+
+      - name: Publish GitHub Release
+        run: npx electron-forge release --from-make
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

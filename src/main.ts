@@ -124,8 +124,8 @@ if (started) app.quit();
 // the background, and Squirrel applies it on the next launch — after which the
 // beta no longer starts. The version number is not the problem and bumping it
 // would not help; the identity mismatch is.
-if (app.getName() === 'irdashies') {
-  updateElectronApp();
+if (app.getName() === 'Gapline') {
+  updateElectronApp({ repo: 'oluops/gapline' });
 } else {
   log.info(
     `[update] Auto-update disabled for non-official build "${app.getName()}"`

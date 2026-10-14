@@ -724,8 +724,8 @@ export const GeneralSettings = ({ previewMode }: GeneralSettingsProps = {}) => {
                     Start on system startup
                   </h3>
                   <p className="text-sm text-slate-400">
-                    If enabled, irDashies will start automatically on system
-                    start up.
+                    If enabled, Gapline will start automatically on system start
+                    up.
                   </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">

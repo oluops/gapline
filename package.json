@@ -1,11 +1,11 @@
 {
-  "name": "irdashies",
-  "productName": "irdashies",
-  "version": "2.0.0",
-  "description": "iRacing Dashboards & Overlays",
+  "name": "gapline",
+  "productName": "Gapline",
+  "version": "2.1.0",
+  "description": "Gapline — open-source iRacing overlays",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tariknz/irdashies"
+    "url": "https://github.com/oluops/gapline"
   },
   "main": ".vite/build/main.cjs",
   "scripts": {
@@ -100,8 +100,7 @@
   },
   "keywords": [],
   "author": {
-    "name": "Tarik Alani",
-    "email": "tarik.nzl@gmail.com"
+    "name": "OluOps"
   },
   "license": "MIT",
   "engines": {
@@ -127,5 +126,6 @@
   "overrides": {
     "yauzl": "^3.3.1",
     "@electron/rebuild": "^4"
-  }
+  },
+  "homepage": "https://github.com/oluops/gapline"
 }

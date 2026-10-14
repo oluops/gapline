@@ -311,7 +311,7 @@ export class OverlayManager {
       y: expectedBounds.y,
       width: expectedBounds.width,
       height: expectedBounds.height,
-      title: `irDashies - ${display.id}${isPrimary ? ' (Primary)' : ''})`,
+      title: `Gapline - ${display.id}${isPrimary ? ' (Primary)' : ''})`,
       transparent: true,
       frame: false,
       skipTaskbar: this.skipTaskbar,
@@ -1076,7 +1076,7 @@ export class OverlayManager {
     if (trayNotificationShown) return;
 
     new Notification({
-      title: 'irDashies',
+      title: 'Gapline',
       body: 'Settings window is still accessible via the system tray icon',
     }).show();
     writeData('trayNotificationShown', true);
@@ -1152,7 +1152,7 @@ export class OverlayManager {
     }
 
     const browserWindow = new BrowserWindow({
-      title: 'irDashies - Gantry',
+      title: 'Gapline - Gantry',
       frame: true,
       width: 1400,
       height: 800,
@@ -1327,7 +1327,7 @@ export class OverlayManager {
     // Load saved window bounds
     const savedBounds = loadWindowBounds();
     const defaultOptions: BrowserWindowConstructorOptions = {
-      title: `irDashies - Settings`,
+      title: `Gapline - Settings`,
       frame: true,
       width: 800,
       height: 700,

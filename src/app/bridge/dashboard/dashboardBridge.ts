@@ -544,7 +544,7 @@ export async function publishDashboardUpdates(
 
     const { canceled, filePath } = await dialog.showSaveDialog({
       title: 'Export Log File',
-      defaultPath: 'irdashies.log',
+      defaultPath: 'gapline.log',
       filters: [{ name: 'Log Files', extensions: ['log', 'txt'] }],
     });
     if (canceled || !filePath) return false;
